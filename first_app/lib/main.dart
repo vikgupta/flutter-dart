@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
-// void main() {
-//   runApp(MyApp());
-// }
+import './question.dart';
 
 void main() => runApp(MyApp()); // can be done for any function given there is only one expression
 
@@ -33,7 +31,7 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(title: Text('First App'),),
         body: Column(
           children: <Widget>[
-            Text(
+            Question(
               questions[_questionIndex % questions.length]
             ), 
             RaisedButton(
