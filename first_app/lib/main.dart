@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import './question.dart';
-import './answer.dart';
+import './quiz.dart';
+import './result.dart';
 
 void main() => runApp(MyApp()); // can be done for any function given there is only one expression
 
@@ -12,7 +12,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   var _questionIndex = 0;
-  final questions = const [
+  final _questions = const [
     {
       'questionText': 'Favorite Color?',
       'answers': ['Blue', 'Black', 'Red', 'Green']
@@ -39,18 +39,13 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: Text('First App'),),
-        body: _questionIndex < questions.length ? Column(
-          children: <Widget>[
-            Question(
-              questions[_questionIndex % questions.length]['questionText']
-            ), 
-            ...(questions[_questionIndex % questions.length]['answers'] as List<String>).map((answer) {
-              return Answer(answer, _answerQuestion);
-            }).toList()
-          ]
-        ) : Center(
-          child: Text('No more questions!')
-        ),
+        body: _questionIndex < _questions.length ? 
+          Quiz(
+            answerQuestions: _answerQuestion,
+            questionIndex: _questionIndex,
+            questions: _questions,
+          ) : 
+          Result(),
       )
     );
   }
