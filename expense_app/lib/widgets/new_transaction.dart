@@ -1,16 +1,29 @@
 import 'package:flutter/material.dart';
 
-class NewTransaction extends StatelessWidget {
+class NewTransaction extends StatefulWidget {
   final Function addTransactionHandler;
-  final titleController = TextEditingController();
-  final amountController = TextEditingController();
 
   NewTransaction(this.addTransactionHandler);
 
+  @override
+  _NewTransactionState createState() => _NewTransactionState();
+}
+
+class _NewTransactionState extends State<NewTransaction> {
+  final titleController = TextEditingController();
+
+  final amountController = TextEditingController();
+
   void txHandler() {
-    if(titleController.text.isNotEmpty && amountController.text.isNotEmpty) {
-      addTransactionHandler(titleController.text, amountController.text);
+    if(titleController.text.isEmpty || amountController.text.isEmpty) {
+      return;
     }
+    
+    // widget is available to get handle of the underlying widget
+    widget.addTransactionHandler(titleController.text, amountController.text);
+
+    // context is available to get the context property of the underlying widget
+    Navigator.of(context).pop();
   }
 
   @override
