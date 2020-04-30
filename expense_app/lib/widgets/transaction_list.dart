@@ -14,25 +14,30 @@ class TransactionList extends StatelessWidget {
     return Container(
       height: 450,
       child: transactions.isEmpty ? 
-        Column(
-          children: <Widget>[
-            Text(
-              'No transactions yet!', 
-              style: Theme.of(context).textTheme.title,
-            ),
-            SizedBox(
-              height: 20,
-              width: double.infinity,
-            ),
-            Container(
-              height: 200,
-              child: Image.asset(
-                'assets/images/waiting.png', 
-                fit: BoxFit.cover,
+        LayoutBuilder(builder: (ctx, constraints) {
+          return Column(
+            children: <Widget>[
+              Container(
+                height: constraints.maxHeight * 0.1,
+                child: Text(
+                  'No transactions yet!', 
+                  style: Theme.of(context).textTheme.title,
+                ),
               ),
-            ),
-          ],
-        ) :
+              SizedBox(
+                height: constraints.maxHeight * 0.05,
+                width: double.infinity,
+              ),
+              Container(
+                height: constraints.maxHeight * 0.85,
+                child: Image.asset(
+                  'assets/images/waiting.png', 
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ],
+          );
+        }) :
         ListView.builder(
         itemBuilder: (ctx, index) {
           return Card(
