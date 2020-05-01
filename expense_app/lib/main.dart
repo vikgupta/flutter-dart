@@ -26,6 +26,7 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // Should ideally use CupertinoApp for iOS but that has very limited customisations available
     return MaterialApp(
       title: 'Personal Expenses',
       theme: ThemeData(
@@ -158,7 +159,10 @@ class _MyHomePageState extends State<MyHomePage> {
             if(isLandscape) Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text('Show Chart'),
+                Text(
+                  'Show Chart',
+                  style: Theme.of(context).textTheme.title,
+                ),
                 Switch.adaptive(  // it allows adaptive theme for iOS / android
                   activeColor: Theme.of(context).accentColor,
                   value: _showChart,
