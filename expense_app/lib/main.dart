@@ -111,6 +111,33 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  List<Widget> _buildLandscapeContent(Widget chartWidget, Widget transactionListWidget) {
+    return [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            'Show Chart',
+            style: Theme.of(context).textTheme.title,
+          ),
+          Switch.adaptive(  // it allows adaptive theme for iOS / android
+            activeColor: Theme.of(context).accentColor,
+            value: _showChart,
+            onChanged: _showChartSwitchHandler,
+          ),
+        ],
+      ), 
+      _showChart ? chartWidget: transactionListWidget
+    ];
+  }
+
+  List<Widget> _buildPortraitContent(Widget chartWidget, Widget transactionListWidget) {
+    return [
+      chartWidget, 
+      transactionListWidget
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
@@ -156,25 +183,8 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            if(isLandscape) Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  'Show Chart',
-                  style: Theme.of(context).textTheme.title,
-                ),
-                Switch.adaptive(  // it allows adaptive theme for iOS / android
-                  activeColor: Theme.of(context).accentColor,
-                  value: _showChart,
-                  onChanged: _showChartSwitchHandler,
-                ),
-              ],
-            ),
-            if(!isLandscape) chartWidget,
-            if(!isLandscape) transactionListWidget,
-            if(isLandscape) _showChart ?
-              chartWidget:
-              transactionListWidget,
+            if(isLandscape) ..._buildLandscapeContent(chartWidget, transactionListWidget),
+            ..._buildPortraitContent(chartWidget, transactionListWidget),
           ],
         ),
       ),
