@@ -6,8 +6,9 @@ import '../models/meal.dart';
 
 class MealItem extends StatelessWidget {
   final Meal meal;
+  final Function removeItem;
 
-  MealItem(this.meal);
+  MealItem(this.meal, this.removeItem);
 
   String get complexityText {
     switch (meal.complexity) {
@@ -34,7 +35,12 @@ class MealItem extends StatelessWidget {
         Navigator.of(context).pushNamed(
           MealDetailScreen.routeName, 
           arguments: meal
-        );
+        ).then((result) {
+          // This is invoked when the screen that was pushed using push... is popped
+          if(result != null) {
+            removeItem(result);
+          }
+        });
       },
       child: Card(
         shape: RoundedRectangleBorder(
