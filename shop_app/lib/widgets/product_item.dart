@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../screens/product_details_screen.dart';
-import '../models/product.dart';
+import '../providers/products_provider.dart';
 
 class ProductItem extends StatelessWidget {
-  final Product product;
+  final String productId;
 
-  ProductItem(this.product);
+  ProductItem(this.productId);
 
   @override
   Widget build(BuildContext context) {
+    final product = Provider.of<Products>(context).findById(productId);
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
@@ -21,7 +24,7 @@ class ProductItem extends StatelessWidget {
           onTap: () {
             Navigator.of(context).pushNamed(
               ProductDetailsScreen.routeName,
-              arguments: product
+              arguments: productId
             );
           },
         ),

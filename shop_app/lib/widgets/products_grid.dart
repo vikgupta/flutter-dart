@@ -19,7 +19,7 @@ class ProductsGrid extends StatelessWidget {
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
       ), 
-      itemBuilder: (ctx, index) => ProductItem(products[index]),
+      itemBuilder: (ctx, index) => ProductItem(products[index].id),
     );
   }
 }
