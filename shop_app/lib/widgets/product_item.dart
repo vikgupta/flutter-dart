@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../screens/product_details_screen.dart';
 import '../models/product.dart';
 
 class ProductItem extends StatelessWidget {
@@ -12,9 +13,17 @@ class ProductItem extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
-        child: Image.network(
-          product.imageUrl,
-          fit: BoxFit.cover
+        child: GestureDetector(
+          child: Image.network(
+            product.imageUrl,
+            fit: BoxFit.cover
+          ),
+          onTap: () {
+            Navigator.of(context).pushNamed(
+              ProductDetailsScreen.routeName,
+              arguments: product
+            );
+          },
         ),
         footer: GridTileBar(
           backgroundColor: Colors.black87,
