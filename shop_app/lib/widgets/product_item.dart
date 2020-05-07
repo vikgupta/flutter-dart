@@ -7,8 +7,6 @@ import '../providers/product_provider.dart';
 class ProductItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final product = Provider.of<Product>(context);
-
     return Consumer<Product>(
       builder: (ctx, product, child) => ClipRRect(
         borderRadius: BorderRadius.circular(10),
