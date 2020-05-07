@@ -5,7 +5,7 @@ import './screens/products_overview_screen.dart';
 import './screens/product_details_screen.dart';
 
 import './providers/products_provider.dart';
-import './providers/cart.dart';
+import './providers/cart_provider.dart';
 
 void main() => runApp(MyApp());
 
