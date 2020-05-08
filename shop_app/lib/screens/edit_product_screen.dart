@@ -45,7 +45,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
   }
 
   void _saveForm() {
-    _form.currentState.save();
+    if(_form.currentState.validate()) {
+      _form.currentState.save();
+    }
   }
 
   @override
@@ -71,6 +73,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   labelText: 'Title',
                 ),
                 textInputAction: TextInputAction.next,
+                validator: (value) {
+                  return value.isEmpty ? 'Please provide title' : null;  // Any non-NULL text returned means the error
+                },
                 onFieldSubmitted: (_) {
                   FocusScope.of(context).requestFocus(_priceFocusNode);
                 },
@@ -91,6 +96,18 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 textInputAction: TextInputAction.next,
                 keyboardType: TextInputType.number,
                 focusNode: _priceFocusNode,
+                validator: (value) {
+                  if(value.isEmpty) {
+                    return 'Please provide a value';
+                  }
+                  if(double.tryParse(value) == null) {
+                    return 'Please provide a valid number';
+                  } 
+                  if(double.parse(value) <= 0) {
+                    return 'Invalid price';
+                  }
+                  return null;  // Any non-NULL text returned means the error
+                },
                 onFieldSubmitted: (_) {
                   FocusScope.of(context).requestFocus(_descFocusNode);
                 },
@@ -111,6 +128,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 maxLines: 3,
                 keyboardType: TextInputType.multiline,
                 focusNode: _descFocusNode,
+                validator: (value) {
+                  return value.isEmpty ? 'Please provide description' : null;  // Any non-NULL text returned means the error
+                },
                 onSaved: (value) {
                   _editedProduct = Product(
                     id: _editedProduct.id,
@@ -152,6 +172,10 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       textInputAction: TextInputAction.done,
                       controller: _imageUrlController,
                       focusNode: _imageUrlFocusNode,
+                      validator: (value) {
+                        // we can use regex also for valid urls
+                        return value.isEmpty ? 'Please provide image url' : null;  // Any non-NULL text returned means the error
+                      },
                       onFieldSubmitted: (_) {
                         _saveForm();
                       },
