@@ -42,4 +42,7 @@ class Orders with ChangeNotifier {
     notifyListeners();
   }
 
+  int get ordersCount {
+    return _orders.length;
+  }
 }
