@@ -53,6 +53,9 @@ class Products with ChangeNotifier {
   }
 
   Future<void> fetchAndSetProducts() async {
+    // Clear the list first
+    _items.clear();
+    
     const url = 'https://flutter-shop-app-1400d.firebaseio.com/products.json';
     try {
       final response = await http.get(url, headers: {});
