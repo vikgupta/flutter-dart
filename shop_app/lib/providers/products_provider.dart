@@ -127,7 +127,22 @@ class Products with ChangeNotifier {
   }
 
   void deleteProduct(String productId) {
-    _items.removeWhere((item) => item.id == productId);
+    final existingIndex = _items.indexWhere((item) => item.id == productId);
+    var existingProduct = _items[existingIndex];
+    _items.removeAt(existingIndex);
+
+    final url = 'https://flutter-shop-app-1400d.firebaseio.com/products/$productId.json';
+    http.delete(url)
+    .then((response) {
+      if(response.statusCode >= 400) {
+        
+      }
+      existingProduct = null;
+    })
+    .catchError((_) {
+      _items.insert(existingIndex, existingProduct);
+    });
+
     notifyListeners();
   }
 }
