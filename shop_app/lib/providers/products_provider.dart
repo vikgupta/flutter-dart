@@ -52,36 +52,33 @@ class Products with ChangeNotifier {
     return _items.firstWhere((product) => product.id == id);
   }
 
-  Future<void> addProduct(Product prod) {
+  Future<void> addProduct(Product prod) async {
     const url = 'https://flutter-shop-app-1400d.firebaseio.com/products.json';
-    return http.post(
-      url,
-      headers: {},
-      body: json.encode({
-        'title': prod.title,
-        'description': prod.description,
-        'price': prod.price,
-        'imageUrl': prod.imageUrl,
-        'isFavorite': prod.isFavorite
-      }),
-    )
-    .then((response) {
-      //if(response.statusCode == 200)
-      {
-        final newProduct = Product(
-          id: json.decode(response.body)['name'],
-          title: prod.title,
-          description: prod.description,
-          price: prod.price,
-          imageUrl: prod.imageUrl
-        );
-        _items.add(newProduct);
-        notifyListeners();
-      }
-    })
-    .catchError((error) {
+    try {
+      final response = await http.post(
+        url,
+        headers: {},
+        body: json.encode({
+          'title': prod.title,
+          'description': prod.description,
+          'price': prod.price,
+          'imageUrl': prod.imageUrl,
+          'isFavorite': prod.isFavorite
+        }),
+      );
+
+      final newProduct = Product(
+        id: json.decode(response.body)['name'],
+        title: prod.title,
+        description: prod.description,
+        price: prod.price,
+        imageUrl: prod.imageUrl
+      );
+      _items.add(newProduct);
+      notifyListeners();
+    } catch(error) {
       throw error;
-    });
+    }
   }
 
   void updateProduct(Product prod) {
