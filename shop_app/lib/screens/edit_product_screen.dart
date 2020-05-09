@@ -82,40 +82,36 @@ class _EditProductScreenState extends State<EditProductScreen> {
       // Set loading to true for showing spinner
       setState(() {
         _isLoading = true;
-      }); 
+      });
 
-      if(_editedProduct.id != null) {   // editing an existing product
+      try {
+        if(_editedProduct.id != null) {   // editing an existing product
+          await Provider.of<Products>(context, listen: false).updateProduct(_editedProduct);
+        } else {
+          await Provider.of<Products>(context, listen: false).addProduct(_editedProduct);
+        }
+      } catch(error) {
+        await showDialog<Null>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text('Some error occurred'),
+            content: Text('Something went wrong!'),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Okay'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          ),
+        );
+      } finally {
         // Set loading to false
         setState(() {
-          _isLoading = true;
+          _isLoading = false;
         }); 
-        Provider.of<Products>(context, listen: false).updateProduct(_editedProduct);        
-      } else {  // creating a new product
-        try {
-          await Provider.of<Products>(context, listen: false).addProduct(_editedProduct);
-        } catch(error) {
-          await showDialog<Null>(
-            context: context,
-            builder: (ctx) => AlertDialog(
-              title: Text('Some error occurred'),
-              content: Text('Something went wrong!'),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text('Okay'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                )
-              ],
-            ),
-          );
-        } finally {
-          // Set loading to false
-          setState(() {
-            _isLoading = true;
-          }); 
-          Navigator.of(context).pop();
-        }
+        Navigator.of(context).pop();
       }
     }
   }
