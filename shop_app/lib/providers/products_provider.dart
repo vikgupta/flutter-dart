@@ -53,7 +53,7 @@ class Products with ChangeNotifier {
   }
 
   Future<void> addProduct(Product prod) {
-    const url = 'https://flutter-shop-app-1400d.firebaseio.com/products.json';
+    const url = 'https://flutter-shop-app-1400d.firebaseio.com/products';
     return http.post(
       url,
       headers: {},
@@ -64,8 +64,9 @@ class Products with ChangeNotifier {
         'imageUrl': prod.imageUrl,
         'isFavorite': prod.isFavorite
       }),
-    ).then((response) {
-      if(response.statusCode == 200)
+    )
+    .then((response) {
+      //if(response.statusCode == 200)
       {
         final newProduct = Product(
           id: json.decode(response.body)['name'],
@@ -77,6 +78,9 @@ class Products with ChangeNotifier {
         _items.add(newProduct);
         notifyListeners();
       }
+    })
+    .catchError((error) {
+      throw error;
     });
   }
 
