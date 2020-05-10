@@ -23,30 +23,6 @@ class ProductsOverviewScreen extends StatefulWidget {
 
 class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   bool _showFavoritesOnly = false;
-  var _isInit = true;
-  var _isLoading = false;
-
-  @override
-  void didChangeDependencies() {
-    if(_isInit) {
-      // start showing the spinner
-      setState(() {
-        _isLoading = true;
-      });
-      
-      Provider.of<Products>(context).fetchAndSetProducts()
-      .then((_) {
-        // stop showing the spinner
-        setState(() {
-          _isLoading = false;
-        });
-      });
-
-      _isInit = false;
-    }
-    
-    super.didChangeDependencies();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,11 +67,27 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
         ],
       ),
       drawer: AppDrawer(),
-      body: _isLoading ? 
-        Center(
-          child: CircularProgressIndicator(),
-        ) : 
-        ProductsGrid(_showFavoritesOnly),
+      body: FutureBuilder(
+        future: Provider.of<Products>(context, listen: false).fetchAndSetProducts(),
+        builder: (context, dataSnapshot) {
+          if( dataSnapshot.connectionState == ConnectionState.waiting ) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            if(dataSnapshot.error != null) {
+              // Do error handling stuff
+              return Center(
+                child: Text('Error while fetching orders'),
+              );
+            } else {
+              return Consumer<Products>(
+                builder: (ctx, orderData, child) => ProductsGrid(_showFavoritesOnly),
+              );
+            }
+          }
+        },
+      ), 
     );
   }
 }
