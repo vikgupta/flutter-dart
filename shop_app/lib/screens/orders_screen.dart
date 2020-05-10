@@ -6,56 +6,40 @@ import '../widgets/app_drawer.dart';
 
 import '../providers/orders_provider.dart';
 
-class OrdersScreen extends StatefulWidget {
+class OrdersScreen extends StatelessWidget {
   static const String routeName = '/orders';
 
   @override
-  _OrdersScreenState createState() => _OrdersScreenState();
-}
-
-class _OrdersScreenState extends State<OrdersScreen> {
-  var _isInit = true;
-  var _isLoading = false;
-
-  @override
-  void didChangeDependencies() {
-    if(_isInit) {
-      // start showing the spinner
-      setState(() {
-        _isLoading = true;
-      });
-      
-      Provider.of<Orders>(context).fetchAndSetOrders()
-      .then((_) {
-        // stop showing the spinner
-        setState(() {
-          _isLoading = false;
-        });
-      });
-
-      _isInit = false;
-    }
-    
-    super.didChangeDependencies();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final orders = Provider.of<Orders>(context);
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Your Orders')
       ),
       drawer: AppDrawer(),
-      body: _isLoading ? 
-        Center(
-          child: CircularProgressIndicator(),
-        ) :
-        ListView.builder(
-          itemCount: orders.ordersCount,
-          itemBuilder: (ctx, index) => OrderItem(orders.orders[index]),
-        )
+      body: FutureBuilder(
+        future: Provider.of<Orders>(context, listen: false).fetchAndSetOrders(),
+        builder: (context, dataSnapshot) {
+          if( dataSnapshot.connectionState == ConnectionState.waiting ) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            if(dataSnapshot.error != null) {
+              // Do error handling stuff
+              return Center(
+                child: Text('Error while fetching orders'),
+              );
+            } else {
+              return Consumer<Orders>(
+                builder: (ctx, orderData, child) => ListView.builder(
+                  itemCount: orderData.ordersCount,
+                  itemBuilder: (ctx, index) => OrderItem(orderData.orders[index]),
+                ),
+              );
+            }
+          }
+        },
+      ),
     );
   }
 }
