@@ -133,7 +133,7 @@ class Products with ChangeNotifier {
     _items.removeAt(existingIndex);
     notifyListeners();
 
-    final url = 'https://flutter-shop-app-1400d.firebaseio.com/products/$productId';
+    final url = 'https://flutter-shop-app-1400d.firebaseio.com/products/$productId.json';
     final response = await http.delete(url);
     if(response.statusCode >= 400) {
       _items.insert(existingIndex, existingProduct);
