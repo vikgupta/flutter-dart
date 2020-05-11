@@ -27,6 +27,7 @@ dependencies:
   provider: ^4.0.5+1
   intl: ^0.16.1
   http: ^0.12.1
+  shared_preferences: ^0.5.7+1
 
 dev_dependencies:
   flutter_test:
