@@ -78,7 +78,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
             if(dataSnapshot.error != null) {
               // Do error handling stuff
               return Center(
-                child: Text('Error while fetching orders'),
+                child: Text('Error while fetching products'),
               );
             } else {
               return Consumer<Products>(
