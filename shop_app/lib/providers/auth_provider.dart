@@ -22,7 +22,13 @@ class Auth with ChangeNotifier {
 
       final responseData = json.decode(response.body);
       if(responseData['error'] != null) {
+        // Server returned error
         throw HttpException(responseData['error']['message']);
+      } else {
+        _token = responseData['idToken'];
+        _userId = responseData['localId'];
+        _expiryDate = DateTime.now().add(Duration(seconds: int.parse(responseData['expiresIn'])));
+        notifyListeners();
       }
     } catch(error) {
       throw error;
@@ -44,6 +50,18 @@ class Auth with ChangeNotifier {
       pwd, 
       'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyA-f2YNcTVV2OmzxCO4Q8kPZ0OHAkRK0c4'
     );
+  }
+
+  String get token {
+    if(_token != null && _expiryDate != null && _expiryDate.isAfter(DateTime.now())) {
+      return _token;
+    }
+
+    return null;
+  }
+
+  bool get isAuthenticated {
+    return token != null;
   }
 
 }
