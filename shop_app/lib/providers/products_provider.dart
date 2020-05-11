@@ -41,6 +41,10 @@ class Products with ChangeNotifier {
     // ),
   ];
 
+  final String authToken;
+
+  Products(this.authToken, this._items);
+
   List<Product> get items {
     return [..._items];
   }
@@ -57,7 +61,7 @@ class Products with ChangeNotifier {
     // Clear the list first
     _items.clear();
     
-    const url = 'https://flutter-shop-app-1400d.firebaseio.com/products.json';
+    final url = 'https://flutter-shop-app-1400d.firebaseio.com/products.json?auth=$authToken';
     try {
       final response = await http.get(url, headers: {});
       final responseData = json.decode(response.body) as Map<String, dynamic>;
@@ -82,7 +86,7 @@ class Products with ChangeNotifier {
   }
 
   Future<void> addProduct(Product prod) async {
-    const url = 'https://flutter-shop-app-1400d.firebaseio.com/products.json';
+    final url = 'https://flutter-shop-app-1400d.firebaseio.com/products.json?auth=$authToken';
     try {
       final response = await http.post(
         url,
@@ -114,7 +118,7 @@ class Products with ChangeNotifier {
     int index =_items.indexWhere((item) => item.id == prod.id);
     if(index >= 0) {
       // Update data on server too
-      final url = 'https://flutter-shop-app-1400d.firebaseio.com/products/${prod.id}.json';
+      final url = 'https://flutter-shop-app-1400d.firebaseio.com/products/${prod.id}.json?auth=$authToken';
       await http.patch(
         url,
         body: json.encode({
@@ -136,7 +140,7 @@ class Products with ChangeNotifier {
     _items.removeAt(existingIndex);
     notifyListeners();
 
-    final url = 'https://flutter-shop-app-1400d.firebaseio.com/products/$productId.json';
+    final url = 'https://flutter-shop-app-1400d.firebaseio.com/products/$productId.json?auth=$authToken';
     final response = await http.delete(url);
     if(response.statusCode >= 400) {
       _items.insert(existingIndex, existingProduct);
