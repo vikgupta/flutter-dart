@@ -2,20 +2,32 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
+import '../models/http_exception.dart';
+
 class Auth with ChangeNotifier {
   String _token;
   DateTime _expiryDate;
   String _userId;
 
   Future<void> _authenticate(String email, String pwd, String url) async {
-    final response = await http.post(
-      url,
-      body: json.encode({
-        'email': email,
-        'password': pwd,
-        'returnSecureToken': true
-      }),
-    );
+    try {
+      final response = await http.post(
+        url,
+        body: json.encode({
+          'email': email,
+          'password': pwd,
+          'returnSecureToken': true
+        }),
+      );
+
+      final responseData = json.decode(response.body);
+      if(responseData['error'] != null) {
+        throw HttpException(responseData['error']['message']);
+      }
+    } catch(error) {
+      throw error;
+    }
+    
   }
 
   Future<void> signup(String email, String pwd) async {

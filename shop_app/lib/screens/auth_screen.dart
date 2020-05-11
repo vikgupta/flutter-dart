@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 
 import '../providers/auth_provider.dart';
 
+import '../models/http_exception.dart';
+
 enum AuthMode { Signup, Login }
 
 class AuthScreen extends StatelessWidget {
@@ -102,6 +104,24 @@ class _AuthCardState extends State<AuthCard> {
   var _isLoading = false;
   final _passwordController = TextEditingController();
 
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('An Error Occurred'),
+        content: Text(message),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('Ok'),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+          )
+        ],
+      )
+    );
+  }
+
   Future<void> _submit() async {
     if (!_formKey.currentState.validate()) {
       // Invalid!
@@ -111,13 +131,33 @@ class _AuthCardState extends State<AuthCard> {
     setState(() {
       _isLoading = true;
     });
-    if (_authMode == AuthMode.Login) {
-      // Log user in
-      await Provider.of<Auth>(context, listen: false).login(_authData['email'], _authData['password']);
-    } else {
-      // Sign user up
-      await Provider.of<Auth>(context, listen: false).signup(_authData['email'], _authData['password']);
+
+    try {
+      if (_authMode == AuthMode.Login) {
+        // Log user in
+        await Provider.of<Auth>(context, listen: false).login(_authData['email'], _authData['password']);
+      } else {
+        // Sign user up
+        await Provider.of<Auth>(context, listen: false).signup(_authData['email'], _authData['password']);
+      }
+    } on HttpException catch(error) {
+      var errorMessage = 'Authentication failed!';
+      if(error.toString().contains('EMAIL_EXISTS')) {
+        errorMessage ='Email id already registered!';
+      } else if(error.toString().contains('EMAIL_NOT_FOUND')) {
+        errorMessage = 'Email not registered, please sign up!';
+      } else if(error.toString().contains('INVALID_PASSWORD')) {
+        errorMessage = 'Invalid credentials!';
+      } else if(error.toString().contains('USER_DISABLED')) {
+        errorMessage = 'User account blocked for security reasons!';
+      }
+
+      _showErrorDialog(errorMessage);
+    } catch (error) {
+      const errorMessage = 'Could not authenticate, please try again later';
+      _showErrorDialog(errorMessage);
     }
+    
     setState(() {
       _isLoading = false;
     });
