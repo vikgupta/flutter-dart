@@ -27,11 +27,16 @@ class _LocationInputState extends State<LocationInput> {
   }
 
   Future<void> _getCurrentUserLocation() async {
-    final locationData = await Location().getLocation();
-    if(locationData != null) {
-      _showPreview(locationData.latitude, locationData.longitude);
-      widget.setSelectedLocation(locationData.latitude, locationData.longitude);
-    }
+    try {
+      final locationData = await Location().getLocation();
+      if(locationData != null) {
+        _showPreview(locationData.latitude, locationData.longitude);
+        widget.setSelectedLocation(locationData.latitude, locationData.longitude);
+      }
+    } catch(error) {
+      //  may be user didn't provide the permission
+      return;
+    } 
   }
 
   Future<void> _selectOnMap() async {
