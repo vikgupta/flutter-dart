@@ -21,17 +21,42 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
+  LatLng _pickedLocation;
+
+  void _selectPlace(LatLng position) {
+    print('_selectPlace called');
+    setState(() {
+      _pickedLocation = position;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    print('isSelecting is ${widget.isSelecting}');
     return Scaffold(
       appBar: AppBar(
         title: Text('Your Map'),
+        actions: <Widget>[
+          if(widget.isSelecting) IconButton(
+            icon: Icon(Icons.check),
+            onPressed: _pickedLocation == null ? null : () {
+              Navigator.of(context).pop(_pickedLocation); // _pickedLocation will be returned to the last screen
+            },
+          )
+        ],
       ),
       body: GoogleMap(
         initialCameraPosition: CameraPosition(
           target: LatLng(widget.initialLocation.latitude, widget.initialLocation.longitude),
           zoom: 17,
         ),
+        onTap: widget.isSelecting ? _selectPlace : null,
+        markers: _pickedLocation == null ? null : {
+          Marker(
+            markerId: MarkerId('m1'),
+            position: _pickedLocation,
+          )
+        },
       ),
     );
   }
