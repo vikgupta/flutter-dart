@@ -44,6 +44,7 @@ class PlacesListScreen extends StatelessWidget {
                   ),
                 ),
                 title: Text(placesData.items[index].title),
+                subtitle: Text(placesData.items[index].location.address),
                 onTap: () {},
               ),
             ),

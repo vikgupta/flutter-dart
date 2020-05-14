@@ -8,7 +8,7 @@ class DBHelper {
       path.join(dbPath, 'places.db'),
       version: 1,
       onCreate: (db, version) {
-        return db.execute('CREATE TABLE $table(id TEXT PRIMARY KEY, title TEXT, image TEXT)');
+        return db.execute('CREATE TABLE $table(id TEXT PRIMARY KEY, title TEXT, image TEXT, loc_lat REAL, loc_lng REAL, address TEXT)');
       },
     );
   }
