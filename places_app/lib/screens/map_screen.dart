@@ -32,7 +32,6 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('isSelecting is ${widget.isSelecting}');
     return Scaffold(
       appBar: AppBar(
         title: Text('Your Map'),
@@ -51,10 +50,13 @@ class _MapScreenState extends State<MapScreen> {
           zoom: 17,
         ),
         onTap: widget.isSelecting ? _selectPlace : null,
-        markers: _pickedLocation == null ? null : {
+        markers: (_pickedLocation == null && widget.isSelecting == true) ? null : {
           Marker(
             markerId: MarkerId('m1'),
-            position: _pickedLocation,
+            position: _pickedLocation ?? LatLng(
+              widget.initialLocation.latitude, 
+              widget.initialLocation.longitude
+            ),
           )
         },
       ),
